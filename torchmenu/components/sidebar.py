@@ -5,7 +5,7 @@ import yaml
 
 from torchmenu.api.torchserve import TorchServe
 
-SETTINGS_FILE_PATH = Path(__file__).parent / 'settings.yaml'
+SETTINGS_FILE_PATH = Path(__file__).parents[1] / 'settings.yaml'
 
 
 def show_sidebar(torchserve: TorchServe):
