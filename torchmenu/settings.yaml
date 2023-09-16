@@ -1,0 +1,4 @@
+inference_port: '8080'
+management_port: '8081'
+metrics_port: '8082'
+url: http://127.0.0.1
