@@ -89,7 +89,7 @@ class TorchServe:
 
     def scale_workers(self, model: VersionModel, min_workers: int, max_workers: int, synchronous: bool = False,
                       timeout: int = -1) -> None:
-        route = f'/models/{model.modelName}'
+        route = f'/models/{model.modelName}/{model.modelVersion}'
         params = {
             'min_worker': min_workers,
             'max_worker': max_workers,
@@ -114,7 +114,7 @@ class TorchServe:
             params['model_name'] = model_name
 
         with httpx.Client(base_url=self.management_url) as client:
-            response = client.post(route, params=params)
+            response = client.post(route, params=params, timeout=None)
 
         return response.status_code == 200
 

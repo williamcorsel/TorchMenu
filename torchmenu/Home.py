@@ -24,12 +24,17 @@ def model_status_panel(torchserve):
     for tab, model in zip(tabs, models):
         tab.write(f'Default Version: {model.defaultVersion}')
 
-        col1, _, col2 = tab.columns([0.1, 0.8, 0.10])
+        model_select_col, _, set_default_col, unregister_col = tab.columns([0.15, 0.55, 0.15, 0.15])
         default_index = model.versions.index(model.defaultVersion)
-        version_model = get_version_model(model, col1.selectbox('Model Version', model.versions, index=default_index))
+        version_model = get_version_model(model, model_select_col.selectbox('Model Version', model.versions,
+                                                                            index=default_index))
 
-        if col2.button('Set Default Model Version', key=f'{version_model.modelName}_set_default'):
+        if set_default_col.button('Set Default', key=f'{version_model.name}_set_default'):
             torchserve.set_model_default_version(model.modelName, version_model.modelVersion)
+            st.experimental_rerun()
+
+        if unregister_col.button('Unregister', key=f'{version_model.name}_unregister'):
+            torchserve.unregister_model(model.modelName, version_model.modelVersion)
             st.experimental_rerun()
 
         model_memory_usage = int(sum([worker.memoryUsage for worker in version_model.workers]) / 1024 / 1024)
@@ -43,11 +48,14 @@ def model_status_panel(torchserve):
             col.metric(**metric)
 
         scale_worker_expander = tab.expander('Scale Workers')
-        with scale_worker_expander.form(f'{version_model.modelName}_scale_workers', clear_on_submit=True):
-            min_worker_amount = st.slider('min_workers', min_value=1, max_value=10, value=version_model.minWorkers)
-            max_worker_amount = st.slider('max_workers', min_value=1, max_value=10, value=version_model.maxWorkers)
+        with scale_worker_expander.form(f'{version_model.name}_scale_workers', clear_on_submit=True):
+            min_worker_amount = st.number_input('min_workers', min_value=0, value=version_model.minWorkers)
+            max_worker_amount = st.number_input('max_workers', min_value=0, value=version_model.maxWorkers)
 
             if st.form_submit_button('Scale'):
+                if min_worker_amount > max_worker_amount:
+                    st.error('min_workers cannot be greater than max_workers.')
+                    return
                 torchserve.scale_workers(version_model, min_worker_amount, max_worker_amount)
                 st.toast('Scaled workers successfully!')
                 time.sleep(1)
