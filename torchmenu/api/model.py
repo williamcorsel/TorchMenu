@@ -29,6 +29,11 @@ class VersionModel(BaseModel):
     workers: List[Worker]
     jobQueueStatus: JobQueueStatus
 
+    @computed_field
+    @property
+    def name(self) -> str:
+        return f'{self.modelName}:{self.modelVersion}'
+
 
 class Model(BaseModel):
     modelName: str
@@ -38,7 +43,7 @@ class Model(BaseModel):
     @computed_field
     @property
     def versions(self) -> List[str]:
-        return list(self.versionModels.keys())
+        return sorted(list(self.versionModels.keys()))
 
 
 def get_version_model(model: Model, version: Optional[str] = None) -> VersionModel:
