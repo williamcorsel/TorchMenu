@@ -21,10 +21,17 @@ setuptools.setup(
     long_description=open('README.md').read(),
     python_requires='>=3.10',
     packages=setuptools.find_packages(exclude=['test', 'docs']),
-    install_requires=get_requirements('requirements.txt'),
+    install_requires=[
+        'streamlit',
+        'httpx',
+        'pydantic'
+    ],
     include_package_data=True,
     extras_require={
-        'dev': get_requirements('requirements-dev.txt'),
+        'dev': [
+            'pre-commit',
+            'flake8'
+        ]
     },
     entry_points={
         'console_scripts': [
