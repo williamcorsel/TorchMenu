@@ -13,7 +13,7 @@ def main():
     if torchserve.is_healthy():
         st.subheader('Register a new model')
 
-        with st.form('register_model', clear_on_submit=True):
+        with st.form('register_model', clear_on_submit=False):
             url_col, name_col = st.columns(2)
             model_url = url_col.text_input('Model URL')
             model_name = name_col.text_input('Model Name (Optional)')
@@ -23,8 +23,9 @@ def main():
             initial_workers = initial_workers_col.number_input('Initial Workers', min_value=0, value=0)
 
             if st.form_submit_button('Register Model'):
-                torchserve.register_model(model_url, batch_size, initial_workers, model_name)
-                st.experimental_rerun()
+                with st.spinner('Registering model...'):
+                    torchserve.register_model(model_url, batch_size, initial_workers, model_name)
+                    st.experimental_rerun()
     else:
         st.error('TorchServe is not reachable.')
 

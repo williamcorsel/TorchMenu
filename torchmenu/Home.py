@@ -19,7 +19,11 @@ def model_status_panel(torchserve):
         st.error('Could not connect to Management API.')
         return
 
-    tabs = st.tabs([model.modelName for model in models])
+    if len(models) == 0:
+        st.info('No models found. Add them on the Registration page.')
+        return
+
+    tabs = st.tabs(sorted([model.modelName for model in models]))
 
     for tab, model in zip(tabs, models):
         tab.write(f'Default Version: {model.defaultVersion}')
@@ -34,8 +38,9 @@ def model_status_panel(torchserve):
             st.experimental_rerun()
 
         if unregister_col.button('Unregister', key=f'{version_model.name}_unregister'):
-            torchserve.unregister_model(model.modelName, version_model.modelVersion)
-            st.experimental_rerun()
+            with st.spinner('Unregistering model...'):
+                torchserve.unregister_model(model.modelName, version_model.modelVersion)
+                st.experimental_rerun()
 
         model_memory_usage = int(sum([worker.memoryUsage for worker in version_model.workers]) / 1024 / 1024)
         metrics = [
