@@ -21,7 +21,13 @@ setuptools.setup(
     python_requires='>=3.10',
     packages=setuptools.find_packages(exclude=['test', 'docs']),
     install_requires=get_requirements('requirements/requirements.txt'),
+    include_package_data=True,
     extras_require={
         'dev': get_requirements('requirements/requirements-dev.txt'),
-    }
+    },
+    entry_points={
+        'console_scripts': [
+            'torchmenu = torchmenu.cli:main',
+        ],
+    },
 )

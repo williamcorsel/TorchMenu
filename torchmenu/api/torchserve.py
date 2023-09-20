@@ -1,22 +1,47 @@
 import logging
+from pathlib import Path
 from typing import Dict, List, Optional
 
 import httpx
+from pydantic import AfterValidator, BaseModel
+from typing_extensions import Annotated
 
 from torchmenu.api.model import Model, VersionModel
 
 LOGGER = logging.getLogger(__name__)
 
 
+def file_exists_or_empty(path: str) -> str:
+    assert len(path) <= 0 or Path(path).is_file(), f'File not found at {path}'
+    return path
+
+
+def dir_exists_or_empty(path: str) -> str:
+    assert len(path) <= 0 or Path(path).is_dir(), f'Directory not found at {path}'
+    return path
+
+
+FilePath = Annotated[str, AfterValidator(file_exists_or_empty)]
+DirPath = Annotated[str, AfterValidator(dir_exists_or_empty)]
+
+
+class TorchServeSettings(BaseModel):
+    url: str
+    inference_port: int
+    management_port: int
+    metrics_port: int
+    store_path: DirPath
+    config_path: FilePath
+
+
 class TorchServe:
-    def __init__(self, url: str, inference_port: int, management_port: int, metrics_port: int) -> None:
-        self.base_url = url
-        self.inference_port = inference_port
-        self.management_port = management_port
-        self.metrics_port = metrics_port
-        self.inference_url = f'{self.base_url}:{inference_port}'
-        self.management_url = f'{self.base_url}:{management_port}'
-        self.metrics_url = f'{self.base_url}:{metrics_port}'
+    def __init__(self,
+                 settings: TorchServeSettings
+                 ) -> None:
+        self.settings = settings
+        self.inference_url = f'{self.settings.url}:{self.settings.inference_port}'
+        self.management_url = f'{self.settings.url}:{self.settings.management_port}'
+        self.metrics_url = f'{self.settings.url}:{self.settings.metrics_port}'
 
     def is_healthy(self) -> bool:
         with httpx.Client(base_url=self.inference_url) as client:
@@ -89,7 +114,7 @@ class TorchServe:
 
     def scale_workers(self, model: VersionModel, min_workers: int, max_workers: int, synchronous: bool = False,
                       timeout: int = -1) -> None:
-        route = f'/models/{model.modelName}'
+        route = f'/models/{model.modelName}/{model.modelVersion}'
         params = {
             'min_worker': min_workers,
             'max_worker': max_workers,
@@ -114,7 +139,7 @@ class TorchServe:
             params['model_name'] = model_name
 
         with httpx.Client(base_url=self.management_url) as client:
-            response = client.post(route, params=params)
+            response = client.post(route, params=params, timeout=None)
 
         return response.status_code == 200
 
