@@ -23,5 +23,10 @@ setuptools.setup(
     install_requires=get_requirements('requirements/requirements.txt'),
     extras_require={
         'dev': get_requirements('requirements/requirements-dev.txt'),
-    }
+    },
+    entry_points={
+        'console_scripts': [
+            'torchmenu = torchmenu.cli:main',
+        ],
+    },
 )
