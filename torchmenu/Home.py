@@ -5,7 +5,7 @@ import yaml
 from httpx import ConnectError
 
 from torchmenu.api.model import get_version_model
-from torchmenu.api.torchserve import TorchServe
+from torchmenu.api.torchserve import TorchServe, TorchServeSettings
 from torchmenu.components.sidebar import SETTINGS_FILE_PATH, show_sidebar
 from torchmenu.components.status import server_status
 
@@ -75,9 +75,10 @@ def load_torchserve():
         return st.session_state[SESSION_KEY_TORCHSERVE]
 
     with open(SETTINGS_FILE_PATH, 'r') as f:
-        settings = yaml.safe_load(f)
+        settings_dict = yaml.safe_load(f)
+        settings = TorchServeSettings(**settings_dict)
 
-    torchserve = TorchServe(**settings)
+    torchserve = TorchServe(settings)
     st.session_state[SESSION_KEY_TORCHSERVE] = torchserve
     return torchserve
 
