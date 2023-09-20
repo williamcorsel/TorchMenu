@@ -19,14 +19,19 @@ setuptools.setup(
     version=get_version('torchmenu/__version__.py'),
     description='TorchServe GUI',
     long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
     python_requires='>=3.10',
     packages=setuptools.find_packages(exclude=['test', 'docs']),
+    author='William Corsel',
+    url='https://github.com/williamcorsel/TorchMenu',
+    license='Apache License 2.0',
     install_requires=[
         'streamlit',
         'httpx',
         'pydantic'
     ],
     include_package_data=True,
+    package_data={'': ['*.yaml']},
     extras_require={
         'dev': [
             'pre-commit',
