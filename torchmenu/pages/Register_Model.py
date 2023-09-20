@@ -14,10 +14,13 @@ def main():
         st.subheader('Register a new model')
 
         with st.form('register_model', clear_on_submit=True):
-            model_url = st.text_input('Model URL')
-            batch_size = st.number_input('Batch Size', min_value=1, value=1)
-            initial_workers = st.number_input('Initial Workers', min_value=0, value=0)
-            model_name = st.text_input('Model Name (Optional)')
+            url_col, name_col = st.columns(2)
+            model_url = url_col.text_input('Model URL')
+            model_name = name_col.text_input('Model Name (Optional)')
+
+            batch_size_col, initial_workers_col = st.columns(2)
+            batch_size = batch_size_col.number_input('Batch Size', min_value=1, value=1)
+            initial_workers = initial_workers_col.number_input('Initial Workers', min_value=0, value=0)
 
             if st.form_submit_button('Register Model'):
                 torchserve.register_model(model_url, batch_size, initial_workers, model_name)
@@ -27,4 +30,9 @@ def main():
 
 
 if __name__ == '__main__':
+    st.set_page_config(
+        page_title='TorchMenu',
+        page_icon=':bento:',
+        layout='wide'
+    )
     main()
