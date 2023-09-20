@@ -30,7 +30,7 @@ class TorchServeSettings(BaseModel):
     inference_port: int
     management_port: int
     metrics_port: int
-    model_store_path: DirPath
+    store_path: DirPath
     config_path: FilePath
 
 
