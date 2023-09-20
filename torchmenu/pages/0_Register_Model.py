@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import streamlit as st
 
 from torchmenu.components.sidebar import show_sidebar
@@ -13,9 +15,13 @@ def main():
     if torchserve.is_healthy():
         st.subheader('Register a new model')
 
+        model_files = Path(torchserve.settings.model_store_path).glob('**/*.mar')
+        model_files = [str(model_file.relative_to(torchserve.settings.model_store_path)) for model_file in model_files]
+
         with st.form('register_model', clear_on_submit=False):
             url_col, name_col = st.columns(2)
-            model_url = url_col.text_input('Model URL')
+            # model_url = url_col.text_input('Model URL')
+            model_url = url_col.selectbox('Model URL', model_files)
             model_name = name_col.text_input('Model Name (Optional)')
 
             batch_size_col, initial_workers_col = st.columns(2)
