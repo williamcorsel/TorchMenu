@@ -27,7 +27,7 @@ setuptools.setup(
     license='Apache License 2.0',
     install_requires=get_requirements('requirements/requirements.txt'),
     include_package_data=True,
-    package_data={'': ['*.yaml', '*.txt']},
+    package_data={'': ['*.yaml']},
     extras_require={
         'dev': get_requirements('requirements/requirements-dev.txt')
     },
