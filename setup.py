@@ -25,18 +25,11 @@ setuptools.setup(
     author='William Corsel',
     url='https://github.com/williamcorsel/TorchMenu',
     license='Apache License 2.0',
-    install_requires=[
-        'streamlit',
-        'httpx',
-        'pydantic'
-    ],
+    install_requires=get_requirements('requirements/requirements.txt'),
     include_package_data=True,
     package_data={'': ['*.yaml']},
     extras_require={
-        'dev': [
-            'pre-commit',
-            'flake8'
-        ]
+        'dev': get_requirements('requirements/requirements-dev.txt')
     },
     entry_points={
         'console_scripts': [
