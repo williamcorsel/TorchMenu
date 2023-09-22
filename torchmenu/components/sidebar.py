@@ -28,4 +28,4 @@ def show_sidebar(torchserve: TorchServe):
                 yaml.safe_dump(dict(settings), f)
 
             st.session_state.clear()
-            st.experimental_rerun()
+            st.rerun()

@@ -35,12 +35,12 @@ def model_status_panel(torchserve):
 
         if set_default_col.button('Set Default', key=f'{version_model.name}_set_default'):
             torchserve.set_model_default_version(model.modelName, version_model.modelVersion)
-            st.experimental_rerun()
+            st.rerun()
 
         if unregister_col.button('Unregister', key=f'{version_model.name}_unregister'):
             with st.spinner('Unregistering model...'):
                 torchserve.unregister_model(model.modelName, version_model.modelVersion)
-                st.experimental_rerun()
+                st.rerun()
 
         model_memory_usage = int(sum([worker.memoryUsage for worker in version_model.workers]) / 1024 / 1024)
         metrics = [
@@ -64,7 +64,7 @@ def model_status_panel(torchserve):
                 torchserve.scale_workers(version_model, min_worker_amount, max_worker_amount)
                 st.toast('Scaled workers successfully!')
                 time.sleep(1)
-                st.experimental_rerun()
+                st.rerun()
 
         raw_data_expander = tab.expander('Raw Data')
         raw_data_expander.json(version_model.model_dump_json())

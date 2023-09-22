@@ -31,7 +31,7 @@ def main():
             if st.form_submit_button('Register Model'):
                 with st.spinner('Registering model...'):
                     torchserve.register_model(model_url, batch_size, initial_workers, model_name)
-                    st.experimental_rerun()
+                    st.rerun()
     else:
         st.error('TorchServe is not reachable.')
 
