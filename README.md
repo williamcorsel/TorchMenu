@@ -2,7 +2,7 @@
 
 A simple [streamlit](https://github.com/streamlit/streamlit) web application to manage your model deployment with [TorchServe](https://github.com/pytorch/serve). It is designed to tap into your currently deployed TorchServe instance using its APIs.
 
-![Home Page](etc/home.png)
+![Home Page](https://raw.githubusercontent.com/williamcorsel/TorchMenu/development/etc/home.png)
 
 Current features include:
 
