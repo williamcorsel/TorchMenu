@@ -1,4 +1,4 @@
 streamlit==1.27.2
-httpx==0.25.0
+httpx==0.25.1
 pydantic==2.3.0
 pyyaml==6.0.1
